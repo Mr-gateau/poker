@@ -1,14 +1,13 @@
 import { useParams } from "react-router-dom";
-import socketIO from "socket.io-client";
+import axios from "axios";
 
-const Room = () => {
+const Room = (props) => {
+  const socket = props.socket;
+  console.log(props);
+
   const params = useParams();
-  const socket = socketIO.connect("http://localhost:5000/");
-  console.log("room", params.room);
   const numberSuite = [1, 2, 3, 4];
-
   const send = (numb) => {
-    console.log("send", numb);
     socket.emit(
       // IDENTIFY BEIN ROOM ?
       "chat message",
@@ -18,13 +17,23 @@ const Room = () => {
       })
     );
   };
+  console.log(socket);
+
+  const newSession = () => {
+    axios.get("http://localhost:5000/session/create/" + params.room);
+  };
+
+  const reveal = () => {
+    axios.get("http://localhost:5000/room/reveal/" + params.room);
+  };
 
   return (
     <div>
-      ROOM
+      {props.user.name}
       {numberSuite.map((numb) => (
         <button onClick={() => send(numb)}>{numb}</button>
       ))}
+      <button onClick={() => newSession()}>Nouvelle session</button>
     </div>
   );
 };
