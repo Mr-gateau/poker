@@ -5,4 +5,4 @@ const Session = new Schema({
   name: String,
 });
 
-module.exports = mongoose.model("Session", User);
+module.exports = mongoose.model("Session", Session);

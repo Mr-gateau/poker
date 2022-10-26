@@ -29,7 +29,7 @@ function App() {
     return (
       <div className="App">
         <Routes>
-          <Route path="/" element={<Home />} />
+          <Route path="/" element={<Home user={user} />} />
           <Route path="/:room" element={<Room user={user} />} />
         </Routes>
       </div>

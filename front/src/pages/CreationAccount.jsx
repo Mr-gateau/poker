@@ -6,7 +6,7 @@ const CreationAccount = (props) => {
 
   const send = () => {
     axios
-      .post("http://localhost:5000/create/", {
+      .post("http://localhost:5000/user/create/", {
         key: (Math.random() + 1).toString(36).substring(7),
         name: name,
       })
