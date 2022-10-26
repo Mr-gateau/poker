@@ -21,9 +21,27 @@ const CreationAccount = (props) => {
   };
 
   return (
-    <div>
-      <input type="text" onChange={(e) => setName(e.target.value)} />
-      {name.length > 3 && <button onClick={() => send()}>Connect</button>}
+    <div
+      style={{
+        width: "50%",
+        margin: "auto",
+        marginTop: "20%",
+      }}
+    >
+      <h4>Entrez votre nom :</h4>
+      <input
+        style={{
+          width: "100%",
+          padding: "20px",
+        }}
+        type="text"
+        onChange={(e) => setName(e.target.value)}
+      />
+      {name.length > 3 && (
+        <button class="fill" onClick={() => send()}>
+          Connect
+        </button>
+      )}
     </div>
   );
 };

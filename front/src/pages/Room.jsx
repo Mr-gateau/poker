@@ -9,45 +9,56 @@ const Room = (props) => {
 
   const [isConnected, setIsconnected] = useState(false);
   const params = useParams();
-  const numberSuite = [1, 2, 3, 4];
+  const numberSuite = [1, 2, 3, 5, 8, 13, 21];
   const [roomInfo, setRoomInfo] = useState(null);
-
-  console.log(isConnected);
+  const [isLoad, setIsload] = useState(true);
+  const [isOwner, setIsowner] = useState(false);
 
   useEffect(() => {
-    if (!isConnected) {
-      axios
-        .get(
-          "http://localhost:5000/room/connect/" +
-            params.room +
-            "/" +
-            props.user.key
-        )
-        .then((res) => {
-          console.log("find and true");
-          setIsconnected(true);
-        })
-        .catch((err) => {
-          console.log(err);
+    if (roomInfo) {
+      if (roomInfo.owner.indexOf(props.user.key) > -1) {
+        return setIsowner(true);
+      } else {
+        console.log("false");
+        return setIsowner(false);
+      }
+    }
+  });
+
+  useEffect(() => {
+    if (isLoad) {
+      if (!isConnected) {
+        axios
+          .get(
+            "http://localhost:5000/room/connect/" +
+              params.room +
+              "/" +
+              props.user.key
+          )
+          .then((res) => {
+            console.log("find and true");
+            setIsconnected(true);
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      } else {
+        console.log("here ? ");
+        axios.get("http://localhost:5000/room/" + params.room).then((res) => {
+          console.log("data", res.data);
+          setRoomInfo(res.data);
+          setIsload(false);
         });
-    } else {
-      console.log("here ? ");
-      axios.get("http://localhost:5000/room/" + params.room).then((res) => {
-        console.log("data", res.data);
-        setRoomInfo(res.data);
-      });
+      }
     }
   }, [isConnected]);
-
-  const newSession = () => {
-    axios.get("http://localhost:5000/session/create/" + params.room);
-  };
 
   const reveal = () => {
     console.log("REVEAL");
     axios
       .get("http://localhost:5000/room/reveal/" + params.room)
-      .then((res) => console.log(res))
+
+      .then((res) => setIsload(true))
       .catch((err) => console.log(err));
   };
 
@@ -61,36 +72,41 @@ const Room = (props) => {
           "/" +
           number
       )
-      .then((res) => console.log(res));
+      .then((res) => setIsload(true))
+      .catch((err) => console.log(err));
   };
+
+  console.log("isown", isOwner);
 
   const restart = () => {
     axios
       .get("http://localhost:5000/restart/" + params.room)
-      .then((res) => console.log("ok"))
+      .then((res) => setIsload(true))
       .catch((err) => console.log(err));
   };
   if (roomInfo) {
     return (
       <div>
-        {props.user.name}
-
-        {roomInfo.hasVoted &&
-        Object.values(roomInfo.hasVoted).length > 0 &&
-        roomInfo.hasVoted[props.user.key] ? (
-          <>Voted</>
-        ) : (
-          numberSuite.map((numb, i) => (
-            <button
-              key={i}
-              onClick={() => {
-                vote(numb);
-              }}
-            >
-              {numb}
-            </button>
-          ))
-        )}
+        <h5>{props.user.name}</h5>
+        <div className="cardBox">
+          {roomInfo.hasVoted &&
+          Object.values(roomInfo.hasVoted).length > 0 &&
+          roomInfo.hasVoted[props.user.key] ? (
+            <>Voted</>
+          ) : (
+            numberSuite.map((numb, i) => (
+              <div
+                className="card"
+                key={i}
+                onClick={() => {
+                  vote(numb);
+                }}
+              >
+                {numb}
+              </div>
+            ))
+          )}
+        </div>
 
         {roomInfo.visible && (
           <div>
@@ -102,16 +118,43 @@ const Room = (props) => {
             ))}
           </div>
         )}
+        <div>
+          <h4>Liste des joueurs</h4>
+          <div
+            style={{
+              padding: "20px",
+              border: "solid 1px",
+              width: "40%",
+              margin: "auto",
+            }}
+          >
+            {roomInfo.users.map((user) => (
+              <p>{user.name}</p>
+            ))}
+          </div>
 
-        {roomInfo.users.map((user) => (
-          <p>{user.name}</p>
-        ))}
-
-        {roomInfo.visible ? (
-          <button onClick={() => restart()}>restart!</button>
-        ) : (
-          <button onClick={() => reveal()}>Reveal!</button>
-        )}
+          {isOwner && (
+            <>
+              {roomInfo.visible ? (
+                <button
+                  className="fill"
+                  style={{ marginTop: "30px" }}
+                  onClick={() => restart()}
+                >
+                  restart!
+                </button>
+              ) : (
+                <button
+                  className="fill"
+                  style={{ marginTop: "30px" }}
+                  onClick={() => reveal()}
+                >
+                  Reveal!
+                </button>
+              )}
+            </>
+          )}
+        </div>
       </div>
     );
   } else {

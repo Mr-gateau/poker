@@ -25,7 +25,15 @@ const Home = (props) => {
 
   return (
     <div>
-      <button onClick={() => generateRoom()}>CREATE ROOM</button>
+      <button
+        class="fill"
+        style={{
+          marginTop: "20%",
+        }}
+        onClick={() => generateRoom()}
+      >
+        Créer une partie
+      </button>
     </div>
   );
 };

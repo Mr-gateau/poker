@@ -5,6 +5,7 @@ import Room from "./pages/Room";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import CreationAccount from "./pages/CreationAccount";
+import "./styles/fill.css";
 
 function App() {
   const [user, setUser] = useState(null);
