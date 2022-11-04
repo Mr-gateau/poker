@@ -51,7 +51,7 @@ const Room = (props) => {
         });
       }
     }
-  }, [isConnected]);
+  }, [isConnected, isLoad, params.room, props.user.key]);
 
   const reveal = () => {
     console.log("REVEAL");
@@ -60,6 +60,7 @@ const Room = (props) => {
 
       .then((res) => setIsload(true))
       .catch((err) => console.log(err));
+    setIsload(true);
   };
 
   const vote = (number) => {
@@ -74,6 +75,7 @@ const Room = (props) => {
       )
       .then((res) => setIsload(true))
       .catch((err) => console.log(err));
+    setIsload(true);
   };
 
   console.log("isown", isOwner);
@@ -83,6 +85,7 @@ const Room = (props) => {
       .get("http://localhost:5000/restart/" + params.room)
       .then((res) => setIsload(true))
       .catch((err) => console.log(err));
+    setIsload(true);
   };
   if (roomInfo) {
     return (
@@ -109,10 +112,23 @@ const Room = (props) => {
         </div>
 
         {roomInfo.visible && (
-          <div>
+          <div
+            style={{
+              width: "10%",
+              margin: "auto",
+              background: "#FFF099",
+              padding: "10px",
+            }}
+          >
             {roomInfo.votes.map((v) => (
-              <div style={{ display: "flex", flexDirection: "row" }}>
-                <p>{Object.values(v)[0].name}</p>:
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                }}
+              >
+                <p>{Object.values(v)[0].name}</p>
                 <p>{Object.values(v)[0].value}</p>
               </div>
             ))}
